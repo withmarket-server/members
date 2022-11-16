@@ -26,13 +26,30 @@ export class MembersService {
     ) {}
     
     async modMemberById(id: number, modifyMemberDto: ModifyMemberDto) {
-      const targetMember = await this.getMemberById(id);
+      const found = await this.getMemberById(id);
 
-      targetMember.status = modifyMemberDto.status;
-      targetMember.alarmFlag = modifyMemberDto.alarmFlag;
+      if (modifyMemberDto.status === MemberStatus.SLP) {
+        found.deletedAt = modifyMemberDto.deletedAt;
+      } else {
+        found.deletedAt = null;
+      }
+
+      // 폰번호
+      found.phone = modifyMemberDto.phone;
       
-      await this.memberRepository.save(targetMember);
-      return targetMember;
+      // 활성상태
+      found.status = modifyMemberDto.status;
+
+      // 알람상태
+      found.alarmFlag = modifyMemberDto.alarmFlag;
+
+      // 비밀번호
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(modifyMemberDto.password, salt);
+      found.password = hashedPassword;
+      
+      const modMember = await this.memberRepository.save(found);
+      return modMember;
     }
 
     async getMemberById(id: number): Promise<Members> {
@@ -41,7 +58,7 @@ export class MembersService {
       this.log.verbose(`found member: ${JSON.stringify(found)}`);
   
       if (!found) {
-        throw new NotFoundException(`Can't find Member with memberId:  ${id}`);
+        throw new NotFoundException(`Can't find Member with memberId: ${id}`);
       }
   
       return found;

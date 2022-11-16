@@ -16,7 +16,7 @@ export class ModifyMemberDto {
   modifiedAt: Date = new Date(); // 수정날짜는 현재날짜
 
   @IsOptional()
-  deletedAt: Date
+  deletedAt: Date = new Date(); // status 가 SLP 이면 insert
 
   @IsOptional()
   @Matches(/^[a-zA-Z0-9]*$/, {

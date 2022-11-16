@@ -33,12 +33,15 @@ export class MembersController {
     }
 
     // 회원 정보 수정(탈퇴, 활성상태)
-    @Patch('/:id')
+    @Patch('/:id/status')
     modMemberById(
       @Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) modifyMemberDto: ModifyMemberDto
     ) {
         this.log.verbose(`Mod Member id: ${id}`);
         this.log.verbose(`Modify target data: ${JSON.stringify(modifyMemberDto)}`);
+
+        // let deviceInfo = window.navigator.userAgent;
+        // console.log(`deviceInfo:: ${deviceInfo}`);
         return this.membersService.modMemberById(id, modifyMemberDto);
     }
 
