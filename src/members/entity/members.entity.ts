@@ -18,13 +18,16 @@ import {
       // 휴대폰번호
       @Column({nullable: true})
       phone: string;
+
+      @Column()
+      email: string;
   
       // 사용자 입력 계정 id
-      @Column({nullable: true})
+      @Column()
       memberId: string;
   
       // 비밀번호
-      @Column({nullable: true})
+      @Column()
       password: string;
   
       // 이름

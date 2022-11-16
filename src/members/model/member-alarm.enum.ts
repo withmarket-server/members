@@ -1,4 +1,4 @@
 export enum MemberAlarm {
-    ACT = 'Y',
-    SLP = 'N',
+    ACTIVE = 'Y',
+    SLEEP = 'N',
 }

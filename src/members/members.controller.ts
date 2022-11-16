@@ -1,11 +1,8 @@
 import { Body, Controller, Post, UsePipes, ValidationPipe, Logger, Get, Param, ParseIntPipe, Patch } from '@nestjs/common';
-import { GetMember } from './decorator/get-member.dacorator';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { ModifyMemberDto } from './dto/modify-member.dto';
 import { Members } from './entity/members.entity';
 import { MembersService } from './members.service';
-import { MemberStatus } from './model/member-status.enum';
-import { MembersStatusValidationPipe } from './pipes/members-status-validation.pipe';
 
 
 @Controller('members')
@@ -24,7 +21,7 @@ export class MembersController {
         this.log.verbose(`createMemberDto : ${JSON.stringify(createMemberDto)}`);
         return this.membersService.signUp(createMemberDto);
     }
-
+ 
     // 회원 조회
     @Get('/:id')
     getMemberById(@Param('id', ParseIntPipe) id: number): Promise<Members> {
@@ -34,16 +31,15 @@ export class MembersController {
 
     // 회원 정보 수정(탈퇴, 활성상태)
     @Patch('/:id/status')
-    modMemberById(
+    modifyMemberById(
       @Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) modifyMemberDto: ModifyMemberDto
     ) {
         this.log.verbose(`Mod Member id: ${id}`);
         this.log.verbose(`Modify target data: ${JSON.stringify(modifyMemberDto)}`);
-
-        // let deviceInfo = window.navigator.userAgent;
-        // console.log(`deviceInfo:: ${deviceInfo}`);
-        return this.membersService.modMemberById(id, modifyMemberDto);
+        
+        return this.membersService.modifyMemberById(id, modifyMemberDto);
     }
 
-    // 회원 활성 상태 조회 (ACT / SLP) -> 회원 조회해서 특정 값만 가져오게?
+    // 회원 활성 상태 조회 (ACT / SLP) -> 회원 조회
+
 }

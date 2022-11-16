@@ -10,7 +10,7 @@ export class MembersStatusValidationPipe implements PipeTransform {
   // value는 실제로 사용자가 입력한 값
   // metadata는 해당 값의 타입 및 http 요청 메소드, key 등등을 의미함
 
-  readonly StatusOptions = [MemberStatus.ACT, MemberStatus.SLP];
+  readonly StatusOptions = [MemberStatus.ACTIVE, MemberStatus.SLEEP];
 
   transform(value: any, metadata: ArgumentMetadata) {
     console.log('value', value); 
