@@ -1,0 +1,3 @@
+# 운용 환경 세팅
+db:
+  synchronize: false 
