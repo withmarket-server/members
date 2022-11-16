@@ -4,7 +4,6 @@ import {
     InternalServerErrorException,
     Logger,
     NotFoundException,
-    UnauthorizedException,
   } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateMemberDto } from './dto/create-member.dto';
@@ -25,10 +24,10 @@ export class MembersService {
     private memberRepository: Repository<Members>,
     ) {}
     
-    async modMemberById(id: number, modifyMemberDto: ModifyMemberDto) {
+    async modifyMemberById(id: number, modifyMemberDto: ModifyMemberDto) {
       const found = await this.getMemberById(id);
 
-      if (modifyMemberDto.status === MemberStatus.SLP) {
+      if (modifyMemberDto.status === MemberStatus.SLEEP) {
         found.deletedAt = modifyMemberDto.deletedAt;
       } else {
         found.deletedAt = null;
@@ -45,11 +44,9 @@ export class MembersService {
 
       // 비밀번호
       const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(modifyMemberDto.password, salt);
-      found.password = hashedPassword;
+      found.password = await bcrypt.hash(modifyMemberDto.password, salt);
       
-      const modMember = await this.memberRepository.save(found);
-      return modMember;
+      return await this.memberRepository.save(found);
     }
 
     async getMemberById(id: number): Promise<Members> {
@@ -65,23 +62,12 @@ export class MembersService {
     }
 
     async signUp(createMemberDto: CreateMemberDto): Promise<void> {
-        const { memberName, password, memberId, phone, alarmFlag, createdAt, modifiedAt, status } = createMemberDto;
     
         // 비밀번호 암호화
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, salt);
+        createMemberDto.password = await bcrypt.hash(createMemberDto.password, salt);
 
-        const member = this.memberRepository.create({
-          memberName,
-          password: hashedPassword,
-          memberId,
-          phone,
-          status,
-          createdAt,
-          modifiedAt,
-          alarmFlag
-        });
-
+        const member = this.memberRepository.create(createMemberDto);
         this.log.verbose(`member: ${JSON.stringify(member)}`);
     
         try {

@@ -1,4 +1,4 @@
 export enum MemberStatus {
-    ACT = 'ACTIVE',
-    SLP = 'SLEEP',
+    ACTIVE = 'ACTIVE',
+    SLEEP = 'SLEEP',
 }
