@@ -1,14 +1,8 @@
 import { IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { MemberAlarm } from '../model/member-alarm.enum';
 import { MemberStatus } from '../model/member-status.enum';
 
 export class CreateMemberDto {
-
-  // constructor() {
-  //   this.alarmFlag = "Y";
-  //   this.createdAt = new Date();
-  //   this.modifiedAt = new Date();
-  //   this.status = MemberStatus.ACT;
-  // }
 
   @IsNotEmpty()
   @IsString()
@@ -32,11 +26,12 @@ export class CreateMemberDto {
     })
   password: string;
   
-  alarmFlag: string = 'Y';
+  alarmFlag: string = MemberAlarm.ACT;
+  
+  status: MemberStatus = MemberStatus.ACT;
 
   createdAt: Date = new Date();
   
   modifiedAt: Date = new Date();
   
-  status: MemberStatus = MemberStatus.ACT;
 }
