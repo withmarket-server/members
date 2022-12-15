@@ -3,6 +3,12 @@ import { CreateMemberDto } from './dto/create-member.dto';
 import { ModifyMemberDto } from './dto/modify-member.dto';
 import { Members } from './entity/members.entity';
 import { MembersService } from './members.service';
+import {
+    ApiResponse,
+    ApiOkResponse,
+    ApiUnauthorizedResponse,
+    ApiBody,
+  } from '@nestjs/swagger';
 
 
 @Controller('members')
@@ -14,6 +20,9 @@ export class MembersController {
     }
 
     // 회원 가입 (회원 활성 상태 default ACT)
+    @ApiResponse({ description: '회원가입 API' })
+    @ApiBody({ type: CreateMemberDto })
+    @ApiOkResponse({ description: '멤버 회원가입' }) // 200
     @Post('/signup')
     signUp(
         @Body(new ValidationPipe({transform: true})) createMemberDto: CreateMemberDto, // ValidationPipe true로 설정해야 dto 오버라이드 돼서 디폴트값 세팅됨
@@ -23,23 +32,23 @@ export class MembersController {
     }
  
     // 회원 조회
+    @ApiResponse({ description: '회원조회 API' })
+    @ApiUnauthorizedResponse({ description: 'Invalid Credential' }) // 401
     @Get('/:id')
-    getMemberById(@Param('id', ParseIntPipe) id: number): Promise<Members> {
+    getMemberById(@Param('id', ParseIntPipe) id: number): Promise<Members> { 
         this.log.verbose(`find Member id: ${id}`);
         return this.membersService.getMemberById(id);
     }
 
     // 회원 정보 수정(탈퇴, 활성상태)
+    @ApiResponse({ description: '회원 정보 수정 API' })
     @Patch('/:id/status')
     modifyMemberById(
       @Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) modifyMemberDto: ModifyMemberDto
     ) {
         this.log.verbose(`Mod Member id: ${id}`);
         this.log.verbose(`Modify target data: ${JSON.stringify(modifyMemberDto)}`);
-        
+
         return this.membersService.modifyMemberById(id, modifyMemberDto);
     }
-
-    // 회원 활성 상태 조회 (ACT / SLP) -> 회원 조회
-
 }
